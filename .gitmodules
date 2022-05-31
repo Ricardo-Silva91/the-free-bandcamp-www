@@ -1,0 +1,3 @@
+[submodule "src/submodules/crispy-ui"]
+	path = src/submodules/crispy-ui
+	url = https://github.com/Ricardo-Silva91/crispy-ui.git
