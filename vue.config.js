@@ -8,9 +8,6 @@ module.exports = {
     css: {
       loaderOptions: {
           sass: {
-            additionalData: `
-                  @import "@/submodules/crispy-ui/src/assets/styles/_variables.scss";
-              `
           }
       }
   }
