@@ -1,0 +1,3 @@
+[submodule "src/components/crispy-ui"]
+	path = src/components/crispy-ui
+	url = git@github.com:Ricardo-Silva91/crispy-ui.git

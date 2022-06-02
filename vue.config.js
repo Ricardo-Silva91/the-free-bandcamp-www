@@ -2,12 +2,15 @@ module.exports = {
     pages: {
       index: {
         entry: 'src/main.js',
-        title: 'Crispy UI',
+        title: 'The Free Bandcamp',
       },
     },
     css: {
       loaderOptions: {
           sass: {
+            additionalData: `
+              @import "@/components/crispy-ui/src/styles/_variables.scss";
+            `
           }
       }
   }
