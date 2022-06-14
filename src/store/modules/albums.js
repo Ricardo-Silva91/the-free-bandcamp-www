@@ -24,7 +24,11 @@ export default {
                 const result = await fetch('/api/getPages?page=latest');
                 const json = await result.json();
 
-                commit('setLatestAlbums', json.data.map((album) => album.data));
+                commit('setLatestAlbums', json.data.map((album) => ({
+                    ...album.data,
+                    art_url: album.data.art_url.replace('_7.', '_10.'),
+
+                })));
                 commit( 'setStatus', 'ready' );
                 
             } catch (error) {
@@ -34,7 +38,10 @@ export default {
     },
     getters: {
         latestAlbums (state) {
-        return state.latestAlbums;
+            return state.latestAlbums;
+        },
+        albumsStatus (state) {
+            return state.status;
         }
     }
   };

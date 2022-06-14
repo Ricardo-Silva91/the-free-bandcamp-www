@@ -1,43 +1,106 @@
 <template>
   <div class="album-grid">
     <h2>
-      album-grid
+      {{ title }}
     </h2>
-    <div class="album-grid__grid">
-      <Album class="album-grid__cell" v-for="(album, index) in latestAlbums" :album="album" :key="index"/>
+    <div class="album-grid__grid" v-if="status === 'ready' && albums.length">
+      <Album
+        class="album-grid__cell"
+        v-for="(album, index) in albums.slice(0, numberOfAlbumsToShow)"
+        :album="album"
+        :key="index"
+        :revealTimeout="index < jump ? index * 300 : 0"
+      />
+      <div ref="target">Is Visible:</div>
+    </div>
+    <div v-if="status === 'loading'" class="album-grid__loader-box">
+      <Loader class="album-grid__loader" />
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-import Album from '../Album/Album.vue';
+import { useElementVisibility } from "@vueuse/core";
+// import { ref } from "vue";
+import Album from "../Album/Album.vue";
+import Loader from "../crispy-ui/src/components/loader/Loader.vue";
 
 export default {
-    name: "AlbumGrid",
-    props: {},
-    computed: {
-        ...mapGetters([
-            "latestAlbums"
-        ])
+  name: "AlbumGrid",
+  data: () => ({
+    numberOfAlbumsToShow: 12,
+    jump: 12,
+    bottomIsVisible: false,
+  }),
+  props: {
+    title: String,
+    albums: Array,
+    status: String,
+  },
+  components: { Album, Loader },
+  mounted() {
+    this.setupIntersectionObserver();
+  },
+  methods: {
+    setupIntersectionObserver() {
+      const target = this.$refs.target;
+      console.log({ target });
+
+      if (target) {
+        this.bottomIsVisible = useElementVisibility(target);
+      }
     },
-    components: { Album }
-}
+    handleIntersectEnter() {
+      console.log("intersecti");
+      this.numberOfAlbumsToShow = this.numberOfAlbumsToShow + this.jump;
+    },
+  },
+  watch: {
+    bottomIsVisible(now, prev) {
+      if (now && !prev) {
+        this.handleIntersectEnter();
+      }
+    },
+    status(now, prev) {
+      console.log("status", { now, prev });
+      if (now === "ready" && prev === "loading") {
+        this.$nextTick(() => {
+          this.setupIntersectionObserver();
+        });
+      }
+    },
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .album-grid {
-  border: 1px solid black;
+  width: 100%;
+  min-height: 101vh;
 
   &__grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-gap: 1rem;
+    grid-gap: calc($space-base * 2);
+    margin: calc($space-base * 2);
+  }
+
+  &__loader-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: calc($space-base * 2);
+  }
+
+  &__loader {
+    height: 5rem;
+    width: 5rem;
   }
 
   &__cell {
-    height: 10rem;
+    width: 100%;
+    height: 100%;
   }
 }
 </style>

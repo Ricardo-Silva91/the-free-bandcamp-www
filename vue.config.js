@@ -10,6 +10,7 @@ module.exports = {
           sass: {
             additionalData: `
               @import "@/components/crispy-ui/src/styles/_variables.scss";
+              @import "@/components/crispy-ui/src/styles/_utilities.scss";
             `
           }
       }
