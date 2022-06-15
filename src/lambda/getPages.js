@@ -12,7 +12,7 @@ exports.handler = async (event) => {
         body: JSON.stringify(result, null, 2)
       };
     } catch (error) {
-      console.log('fetch error', { error });
+      console.error('fetch error', { error });
 
       return {
           statusCode: 500,

@@ -11,7 +11,7 @@
         :key="index"
         :revealTimeout="index < jump ? index * 300 : 0"
       />
-      <div ref="target">Is Visible:</div>
+      <div v-if="mounted" ref="target">Is Visible: {{ bottomIsVisible }}</div>
     </div>
     <div v-if="status === 'loading'" class="album-grid__loader-box">
       <Loader class="album-grid__loader" />
@@ -31,6 +31,7 @@ export default {
     numberOfAlbumsToShow: 12,
     jump: 12,
     bottomIsVisible: false,
+    mounted: false,
   }),
   props: {
     title: String,
@@ -39,19 +40,20 @@ export default {
   },
   components: { Album, Loader },
   mounted() {
-    this.setupIntersectionObserver();
+    this.mounted = true;
+     this.$nextTick(() => {
+        this.setupIntersectionObserver();
+      });
   },
   methods: {
     setupIntersectionObserver() {
       const target = this.$refs.target;
-      console.log({ target });
 
       if (target) {
         this.bottomIsVisible = useElementVisibility(target);
       }
     },
     handleIntersectEnter() {
-      console.log("intersecti");
       this.numberOfAlbumsToShow = this.numberOfAlbumsToShow + this.jump;
     },
   },
@@ -62,7 +64,6 @@ export default {
       }
     },
     status(now, prev) {
-      console.log("status", { now, prev });
       if (now === "ready" && prev === "loading") {
         this.$nextTick(() => {
           this.setupIntersectionObserver();
@@ -101,6 +102,7 @@ export default {
   &__cell {
     width: 100%;
     height: 100%;
+    max-height: 25rem;
   }
 }
 </style>

@@ -3,6 +3,7 @@
     <a
       :class="{
         album__link: true,
+        'supress-interaction': true,
         'album__link--visible': visible,
       }"
       :href="album.url"
@@ -70,6 +71,7 @@ $data-height: $space-one;
   &__link {
     position: relative;
     cursor: pointer;
+    color: $color-text-primary;
 
     width: 100%;
     height: 100%;
@@ -87,6 +89,7 @@ $data-height: $space-one;
     &:hover,
     &:focus-visible {
       filter: $focus-visible-drop-filter;
+      color: $color-text-primary;
     }
 
     &:hover {
