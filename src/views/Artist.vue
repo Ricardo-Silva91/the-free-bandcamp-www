@@ -18,12 +18,14 @@ export default {
     page: Math.floor(Math.random() * 50),
   }),
   mounted() {
-    this.$store.dispatch("getAlbumsFromRemoteByPage", this.page);
+    if(!this.albums.length) {
+      this.$store.dispatch("getAlbumsFromRemoteByArtist", this.title);
+    }
   },
   computed: {
     ...mapGetters(["latestAlbums", "albumsStatus"]),
     albums() {
-      return this.$store.getters.albumsByPage(this.page) ? this.$store.getters.albumsByPage(this.page).albums : [];
+      return this.$store.getters.albumsByArtist(this.title);
     },
     title() {
       return `${this.$route.params.id}`;

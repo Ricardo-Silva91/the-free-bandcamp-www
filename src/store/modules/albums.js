@@ -4,6 +4,7 @@ export default {
     state: () => ({
         latestAlbums: [],
         albums: [],
+        artist: {},
         status: 'ready',
     }),
     mutations: {
@@ -17,6 +18,12 @@ export default {
         },
         addAlbumsPage(state, albums) {
             state.albums = [...state.albums, albums];
+        },
+        addAlbumsArtist(state, { albums, artist }) {
+            state.artist = {
+                ...state.artist,
+                [artist]: albums,
+            };
         },
     },
     actions: {
@@ -58,6 +65,26 @@ export default {
                 commit( 'setStatus', 'error' );
             }            
         },
+        async getAlbumsFromRemoteByArtist( { commit }, artist){
+            commit( 'setStatus', 'loading' );
+            
+            try {
+                const result = await fetch(`/api/getArtist?artist=${artist}`);
+                const json = await result.json();
+
+                commit('addAlbumsArtist', {
+                    artist,
+                    albums: json.map((album) => ({
+                        ...album,
+                        art_url: album.art_url.replace('_7.', '_10.'),
+                    }))
+                });
+                commit( 'setStatus', 'ready' );
+                
+            } catch (error) {
+                commit( 'setStatus', 'error' );
+            }            
+        },
     },
     getters: {
         latestAlbums (state) {
@@ -65,6 +92,9 @@ export default {
         },
         albumsByPage: (state) => (page) => {
             return state.albums.find((albumsPage) => albumsPage.page === page);
+        },
+        albumsByArtist: (state) => (artist) => {
+            return state.artist[artist] || [];
         },
         albumsStatus (state) {
             return state.status;

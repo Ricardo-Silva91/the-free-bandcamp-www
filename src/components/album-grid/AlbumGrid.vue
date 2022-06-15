@@ -11,7 +11,7 @@
         :key="index"
         :revealTimeout="index < jump ? index * 300 : 0"
       />
-      <div v-if="mounted" ref="target">Is Visible: {{ bottomIsVisible }}</div>
+      <div v-if="mounted" ref="target"></div>
     </div>
     <div v-if="status === 'loading'" class="album-grid__loader-box">
       <Loader class="album-grid__loader" />
