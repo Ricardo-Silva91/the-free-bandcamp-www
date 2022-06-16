@@ -2,7 +2,7 @@
   <div class="home">
     <AlbumGrid
       :albums="latestAlbums"
-      title="Latest Albums"
+      title="Latest Sold Albums"
       :status="albumsStatus"
     ></AlbumGrid>
   </div>
