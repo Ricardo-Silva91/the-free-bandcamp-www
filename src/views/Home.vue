@@ -18,9 +18,7 @@ export default {
   components: {
     AlbumGrid,
   },
-  mounted() {
-    console.log("home mounted");
-  },
+  mounted() {},
   computed: {
     ...mapGetters(["latestAlbums", "albumsStatus"]),
   },

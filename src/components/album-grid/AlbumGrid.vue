@@ -2,8 +2,17 @@
   <div class="album-grid">
     <h2>
       {{ title }}
-      <Button @click="sortToggle()">sort: {{sort}}</Button>
     </h2>
+    <div v-if="status === 'ready' && albums.length" class="album-grid__sort-filter">
+      <Button @click="sortToggle()">sort: {{sort}}</Button>
+      <select name="tag-filter" id="tag-filter" v-model="selectedFilterTag">
+        <option :value="undefined">...filter by tag</option>
+        <option v-for="option of tags" :value="option" :key="option">
+          {{ option }}
+        </option>
+      </select>
+      <Button @click="selectedFilterTag = undefined">✖</Button>
+    </div>
     <div class="album-grid__grid" v-if="status === 'ready' && albums.length">
       <Album
         class="album-grid__cell"
@@ -11,6 +20,7 @@
         :album="album"
         :key="index"
         :revealTimeout="index < jump ? index * 300 : 0"
+        @tagClick="handleAlbumTagClick($event)"
       />
       <div v-if="mounted" ref="target"></div>
     </div>
@@ -35,6 +45,7 @@ export default {
     bottomIsVisible: false,
     mounted: false,
     sort: 'asc',
+    selectedFilterTag: undefined,
   }),
   props: {
     title: String,
@@ -52,9 +63,18 @@ export default {
     albumsToShow() {
       let albumArray = [...this.albums];
       albumArray = this.sort === 'asc' ? albumArray : albumArray.reverse();
+      
+      if (this.selectedFilterTag) {
+        albumArray = albumArray.filter((album) => album.details?.tags.includes(this.selectedFilterTag));
+      }
 
       return albumArray.slice(0, this.numberOfAlbumsToShow);
-    }
+    },
+    tags() {
+      const allTags = [...this.albums].reduce((acc, album) => [...acc, ...(album.details?.tags.filter((tag) => !acc.includes(tag)) || [])], []).sort();
+
+      return allTags;
+    },
   },
   methods: {
     setupIntersectionObserver() {
@@ -70,6 +90,11 @@ export default {
     sortToggle() {
       this.sort = this.sort === 'asc' ? 'desc' : 'asc';
       this.numberOfAlbumsToShow = this.jump;
+    },
+    handleAlbumTagClick(tag) {
+      if (this.tags.includes(tag)) {
+        this.selectedFilterTag = tag;
+      }
     }
   },
   watch: {

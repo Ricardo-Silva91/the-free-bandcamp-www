@@ -3,16 +3,16 @@
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link>
   </div>
-  <router-view/>
+  <router-view />
 </template>
 
 <script>
 export default {
-  name: 'App',
+  name: "App",
   mounted() {
-    this.$store.dispatch('getLatestAlbumsFromRemote');
-  }
-}
+    this.$store.dispatch("getLatestAlbumsFromRemote");
+  },
+};
 </script>
 
 <style lang="scss">
@@ -35,5 +35,4 @@ body {
 #nav a {
   font-weight: bold;
 }
-
 </style>

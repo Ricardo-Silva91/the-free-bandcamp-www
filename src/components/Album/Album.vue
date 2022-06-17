@@ -1,5 +1,10 @@
 <template>
-  <div class="album">
+  <div
+    :class="{
+      album: true,
+      'album--visible': visible,
+    }"
+  >
     <a
       :class="{
         album__link: true,
@@ -12,19 +17,30 @@
       <div class="album__img-layer">
         <img class="album__img" :src="album.art_url" :alt="album.item_description" />
       </div>
-      <div class="album__data-layer">
-        <span>{{ album.artist_name }}</span>
-        <a :href="album.url" target="_blank">{{ album.item_description }}</a>
-        <router-link
-          :to="{
-            'name': 'Artist',
-            'params': { 'id': album.artist_name }
-          }"
-          exact
-          >{{ album.artist_name }}</router-link
-        >
-      </div>
     </a>
+    <div class="album__data-layer">
+      <!-- <iframe
+        class="album__data-layer__embed"
+        :src="embedUrl"
+        seamless
+        ><a href="https://tedleo.bandcamp.com/album/the-old-200-ep-2"
+          >The Old 200 EP by Ted Leo &amp; The Pharmacists</a
+        ></iframe
+      > -->
+      <span>{{ album.artist_name }}</span>
+      <a :href="album.url" target="_blank">{{ album.item_description }}</a>
+      <router-link
+        :to="{
+          name: 'Artist',
+          params: { id: album.artist_name },
+        }"
+        exact
+        >{{ album.artist_name }}</router-link
+      >
+      <div class="album__data-layer__tags" v-if="tags.length">
+        <div v-for="tag of tags" class="album__data-layer__tags__tag" :key="tag" @click="$emit('tagClick', tag)">{{ tag }}</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -50,6 +66,12 @@ export default {
     artistLink() {
       return `/artist/${encodeURI(this.album.artist_name)}`;
     },
+    tags() {
+      return this.album.details?.tags || [];
+    },
+    embedUrl() {
+      return `https://bandcamp.com/EmbeddedPlayer/album=${this.album.url}/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/transparent=true/`;
+    },
   },
 };
 </script>
@@ -68,10 +90,33 @@ $data-height: $space-one;
 
   border-radius: $border-radius;
 
+  &--visible {
+    @extend .with-float-animation;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:hover,
+  &:focus-visible {
+    filter: $focus-visible-drop-filter;
+  }
+
+  &:hover {
+    & .album__data-layer {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    & .album__img-layer {
+      opacity: 0.5;
+    }
+  }
+
   &__link {
     position: relative;
     cursor: pointer;
-    color: $color-text-primary;
 
     width: 100%;
     height: 100%;
@@ -82,30 +127,7 @@ $data-height: $space-one;
     transition: all $motion-duration-standard $motion-timing-standard,
       opacity $motion-duration-very-slow $motion-timing-standard;
 
-    &:focus {
-      outline: none;
-    }
-
-    &:hover,
-    &:focus-visible {
-      filter: $focus-visible-drop-filter;
-      color: $color-text-primary;
-    }
-
-    &:hover {
-      & .album__data-layer {
-        opacity: 1;
-        visibility: visible;
-      }
-
-      & .album__img-layer {
-        opacity: 0.5;
-      }
-    }
-
     &--visible {
-      @extend .with-float-animation;
-
       opacity: 1;
       visibility: visible;
     }
@@ -137,9 +159,33 @@ $data-height: $space-one;
     align-items: center;
     z-index: 2;
     transition: all $motion-duration-standard $motion-timing-standard;
+    pointer-events: none;
+
+    color: $color-white;
 
     background-color: black;
     mix-blend-mode: color;
+
+    & > * {
+      pointer-events: all;
+    }
+
+    &__embed {
+      width: 100%;
+      height: 100%;
+    }
+
+    &__tags {
+      display: flex;
+      max-width: 100%;
+      flex-wrap: wrap;
+      gap: 0.2rem;
+      justify-content: center;
+
+      &__tag {
+        cursor: pointer;
+      }
+    }
   }
 }
 </style>
