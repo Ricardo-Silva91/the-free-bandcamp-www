@@ -34,8 +34,6 @@ export default {
                 const result = await fetch('/api/getLatest');
                 const json = await result.json();
 
-                console.log({ json });
-
                 commit('setLatestAlbums', json.map((album) => ({
                     ...album,
                     art_url: album.art_url.replace('_7.', '_10.'),

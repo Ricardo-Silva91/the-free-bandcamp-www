@@ -2,11 +2,12 @@
   <div class="album-grid">
     <h2>
       {{ title }}
+      <Button @click="sortToggle()">sort: {{sort}}</Button>
     </h2>
     <div class="album-grid__grid" v-if="status === 'ready' && albums.length">
       <Album
         class="album-grid__cell"
-        v-for="(album, index) in albums.slice(0, numberOfAlbumsToShow)"
+        v-for="(album, index) in albumsToShow"
         :album="album"
         :key="index"
         :revealTimeout="index < jump ? index * 300 : 0"
@@ -24,6 +25,7 @@ import { useElementVisibility } from "@vueuse/core";
 // import { ref } from "vue";
 import Album from "../Album/Album.vue";
 import Loader from "../crispy-ui/src/components/loader/Loader.vue";
+import Button from "../crispy-ui/src/components/button/Button.vue";
 
 export default {
   name: "AlbumGrid",
@@ -32,18 +34,27 @@ export default {
     jump: 12,
     bottomIsVisible: false,
     mounted: false,
+    sort: 'asc',
   }),
   props: {
     title: String,
     albums: Array,
     status: String,
   },
-  components: { Album, Loader },
+  components: { Album, Loader, Button },
   mounted() {
     this.mounted = true;
      this.$nextTick(() => {
         this.setupIntersectionObserver();
       });
+  },
+  computed: {
+    albumsToShow() {
+      let albumArray = [...this.albums];
+      albumArray = this.sort === 'asc' ? albumArray : albumArray.reverse();
+
+      return albumArray.slice(0, this.numberOfAlbumsToShow);
+    }
   },
   methods: {
     setupIntersectionObserver() {
@@ -56,6 +67,10 @@ export default {
     handleIntersectEnter() {
       this.numberOfAlbumsToShow = this.numberOfAlbumsToShow + this.jump;
     },
+    sortToggle() {
+      this.sort = this.sort === 'asc' ? 'desc' : 'asc';
+      this.numberOfAlbumsToShow = this.jump;
+    }
   },
   watch: {
     bottomIsVisible(now, prev) {
