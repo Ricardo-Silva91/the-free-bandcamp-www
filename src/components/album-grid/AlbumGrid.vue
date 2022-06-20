@@ -71,7 +71,7 @@ export default {
       return albumArray.slice(0, this.numberOfAlbumsToShow);
     },
     tags() {
-      const allTags = [...this.albums].reduce((acc, album) => [...acc, ...(album.details?.tags.filter((tag) => !acc.includes(tag)) || [])], []).sort();
+      const allTags = [...this.albums].reduce((acc, album) => [...acc, ...((album.details?.tags || []).filter((tag) => !acc.includes(tag)) || [])], []).sort();
 
       return allTags;
     },
