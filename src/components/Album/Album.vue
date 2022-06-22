@@ -5,6 +5,22 @@
       'album--visible': visible,
     }"
   >
+    <!-- <div
+      :class="{
+        album__link: true,
+        'supress-interaction': true,
+        'album__link--visible': visible,
+      }"
+      :href="album.url"
+      target="_blank"
+    >
+      <div class="album__img-layer">
+        <img class="album__img" :src="album.art_url" :alt="album.item_description" />
+      </div>
+      <iframe class="album__embed" :src="embedUrl" seamless ref="embedFrame"
+        ><a :href="album.url">{{ album.item_description }}</a></iframe
+      >
+    </div> -->
     <a
       :class="{
         album__link: true,
@@ -19,14 +35,6 @@
       </div>
     </a>
     <div class="album__data-layer">
-      <!-- <iframe
-        class="album__data-layer__embed"
-        :src="embedUrl"
-        seamless
-        ><a href="https://tedleo.bandcamp.com/album/the-old-200-ep-2"
-          >The Old 200 EP by Ted Leo &amp; The Pharmacists</a
-        ></iframe
-      > -->
       <span>{{ album.artist_name }}</span>
       <a :href="album.url" target="_blank">{{ album.item_description }}</a>
       <router-link
@@ -38,7 +46,14 @@
         >{{ album.artist_name }}</router-link
       >
       <div class="album__data-layer__tags" v-if="tags.length">
-        <div v-for="tag of tags" class="album__data-layer__tags__tag" :key="tag" @click="$emit('tagClick', tag)">{{ tag }}</div>
+        <div
+          v-for="tag of tags"
+          class="album__data-layer__tags__tag"
+          :key="tag"
+          @click="$emit('tagClick', tag)"
+        >
+          {{ tag }}
+        </div>
       </div>
     </div>
   </div>
@@ -70,7 +85,15 @@ export default {
       return this.album.details?.tags || [];
     },
     embedUrl() {
-      return `https://bandcamp.com/EmbeddedPlayer/album=${this.album.url}/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/transparent=true/`;
+      return `https://bandcamp.com/EmbeddedPlayer/album=${this.albumId}/size=large/bgcol=ffffff/linkcol=0687f5/minimal=true/transparent=true/`;
+    },
+    albumId() {
+      return this.album.details?.albumId;
+    },
+  },
+  watch: {
+    embedFrame(newVal, oldVal) {
+      console.log({ newVal, oldVal });
     },
   },
 };
@@ -116,7 +139,7 @@ $data-height: $space-one;
 
   &__link {
     position: relative;
-    cursor: pointer;
+    // cursor: pointer;
 
     width: 100%;
     height: 100%;
@@ -170,11 +193,6 @@ $data-height: $space-one;
       pointer-events: all;
     }
 
-    &__embed {
-      width: 100%;
-      height: 100%;
-    }
-
     &__tags {
       display: flex;
       max-width: 100%;
@@ -186,6 +204,15 @@ $data-height: $space-one;
         cursor: pointer;
       }
     }
+  }
+
+  &__embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 4px);
+    border: none;
   }
 }
 </style>

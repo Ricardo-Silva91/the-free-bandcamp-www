@@ -4,14 +4,9 @@
       {{ title }}
     </h2>
     <div v-if="status === 'ready' && albums.length" class="album-grid__sort-filter">
-      <Button @click="sortToggle()">sort: {{sort}}</Button>
-      <select name="tag-filter" id="tag-filter" v-model="selectedFilterTag">
-        <option :value="undefined">...filter by tag</option>
-        <option v-for="option of tags" :value="option" :key="option">
-          {{ option }}
-        </option>
-      </select>
-      <Button @click="selectedFilterTag = undefined">✖</Button>
+      <CrispyButton @click="sortToggle()">sort: {{sort}}</CrispyButton>
+      <CrispySelect :options="tags" label="Tags (alphabetically)" v-model="selectedFilterTag" placeholder="pick a tag..."></CrispySelect>
+      <CrispySelect :options="popularTags" label="Tags (popularity)" v-model="selectedFilterTag" placeholder="pick a tag..."></CrispySelect>
     </div>
     <div class="album-grid__grid" v-if="status === 'ready' && albums.length">
       <Album
@@ -25,7 +20,7 @@
       <div v-if="mounted" ref="target"></div>
     </div>
     <div v-if="status === 'loading'" class="album-grid__loader-box">
-      <Loader class="album-grid__loader" />
+      <CrispyLoader class="album-grid__loader" />
     </div>
   </div>
 </template>
@@ -34,8 +29,9 @@
 import { useElementVisibility } from "@vueuse/core";
 // import { ref } from "vue";
 import Album from "../Album/Album.vue";
-import Loader from "../crispy-ui/src/components/loader/Loader.vue";
-import Button from "../crispy-ui/src/components/button/Button.vue";
+import CrispyLoader from "../crispy-ui/src/components/loader/CrispyLoader.vue";
+import CrispyButton from "../crispy-ui/src/components/button/CrispyButton.vue";
+import CrispySelect from "../crispy-ui/src/components/select/CrispySelect.vue";
 
 export default {
   name: "AlbumGrid",
@@ -52,7 +48,7 @@ export default {
     albums: Array,
     status: String,
   },
-  components: { Album, Loader, Button },
+  components: { Album, CrispyLoader, CrispyButton, CrispySelect },
   mounted() {
     this.mounted = true;
      this.$nextTick(() => {
@@ -74,6 +70,25 @@ export default {
       const allTags = [...this.albums].reduce((acc, album) => [...acc, ...((album.details?.tags || []).filter((tag) => !acc.includes(tag)) || [])], []).sort();
 
       return allTags;
+    },
+    popularTags() {
+      const commonTags = [...this.albums].reduce((acc, album) => {
+        const albumTags = album.details?.tags || [];
+
+        for (const tag of albumTags) {
+          const tagIndex = acc.findIndex((tagObject) => tagObject.tag === tag);
+
+          if (tagIndex !== -1) {
+            acc[tagIndex].count = acc[tagIndex].count + 1;
+          } else {
+            acc.push({ tag, count: 1 });
+          }
+        }
+
+        return acc;
+      }, []).sort((a, b) => a.count > b.count ? -1 : 1);
+
+      return commonTags.map((tagObject) => tagObject.tag);
     },
   },
   methods: {
@@ -143,6 +158,12 @@ export default {
     width: 100%;
     height: 100%;
     max-height: 25rem;
+  }
+
+  &__sort-filter {
+    margin: calc($space-base * 2);
+    display: flex;
+    justify-content: space-between;
   }
 }
 </style>
