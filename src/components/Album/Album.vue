@@ -27,23 +27,23 @@
         'supress-interaction': true,
         'album__link--visible': visible,
       }"
-      :href="album.url"
+      :href="album.link"
       target="_blank"
     >
       <div class="album__img-layer">
-        <img class="album__img" :src="album.art_url" :alt="album.item_description" />
+        <img class="album__img" :src="album.cover" :alt="album.description" />
       </div>
     </a>
     <div class="album__data-layer">
-      <span>{{ album.artist_name }}</span>
-      <a :href="album.url" target="_blank">{{ album.item_description }}</a>
+      <span>{{ album.artist }}</span>
+      <a :href="album.link" target="_blank">{{ album.description }}</a>
       <router-link
         :to="{
           name: 'Artist',
-          params: { id: album.artist_name },
+          params: { id: album.artist },
         }"
         exact
-        >{{ album.artist_name }}</router-link
+        >{{ album.artist }}</router-link
       >
       <div class="album__data-layer__tags" v-if="tags.length">
         <div
@@ -79,16 +79,16 @@ export default {
   },
   computed: {
     artistLink() {
-      return `/artist/${encodeURI(this.album.artist_name)}`;
+      return `/artist/${encodeURI(this.album.artist)}`;
     },
     tags() {
-      return this.album.details?.tags || [];
+      return this.album.tags || [];
     },
     embedUrl() {
       return `https://bandcamp.com/EmbeddedPlayer/album=${this.albumId}/size=large/bgcol=ffffff/linkcol=0687f5/minimal=true/transparent=true/`;
     },
     albumId() {
-      return this.album.details?.albumId;
+      return this.album.link;
     },
   },
   watch: {

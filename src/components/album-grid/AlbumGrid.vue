@@ -61,19 +61,19 @@ export default {
       albumArray = this.sort === 'asc' ? albumArray : albumArray.reverse();
       
       if (this.selectedFilterTag) {
-        albumArray = albumArray.filter((album) => album.details?.tags.includes(this.selectedFilterTag));
+        albumArray = albumArray.filter((album) => album.tags.includes(this.selectedFilterTag));
       }
 
       return albumArray.slice(0, this.numberOfAlbumsToShow);
     },
     tags() {
-      const allTags = [...this.albums].reduce((acc, album) => [...acc, ...((album.details?.tags || []).filter((tag) => !acc.includes(tag)) || [])], []).sort();
+      const allTags = [...this.albums].reduce((acc, album) => [...acc, ...((album.tags || []).filter((tag) => !acc.includes(tag)) || [])], []).sort();
 
       return allTags;
     },
     popularTags() {
       const commonTags = [...this.albums].reduce((acc, album) => {
-        const albumTags = album.details?.tags || [];
+        const albumTags = album.tags || [];
 
         for (const tag of albumTags) {
           const tagIndex = acc.findIndex((tagObject) => tagObject.tag === tag);

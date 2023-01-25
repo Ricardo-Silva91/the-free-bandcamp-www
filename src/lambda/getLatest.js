@@ -2,8 +2,10 @@ import fetch from 'node-fetch';
 
 exports.handler = async () => {
     try {
-      const response = await fetch(`https://tfb-api.netlify.app/api/getLatest`);
+      const response = await fetch(`https://tfb-api.netlify.app/api/getLatest?offset=200`);
       const result = await response.json();
+      
+      console.log({ rl: result.length });
 
       return {
         statusCode: 200,
