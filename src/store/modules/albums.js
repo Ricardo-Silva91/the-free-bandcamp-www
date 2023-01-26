@@ -4,6 +4,7 @@ export default {
     state: () => ({
         latestAlbums: [],
         albums: [],
+        vinylAlbums: [],
         artist: {},
         status: 'ready',
     }),
@@ -15,6 +16,9 @@ export default {
         },
         setLatestAlbums(state, latestAlbums) {
             state.latestAlbums = latestAlbums;
+        },
+        setVinylAlbums(state, vinylAlbums) {
+            state.vinylAlbums = vinylAlbums;
         },
         addAlbumsPage(state, albums) {
             state.albums = [...state.albums, albums];
@@ -43,40 +47,16 @@ export default {
                 commit( 'setStatus', 'error' );
             }            
         },
-        async getAlbumsFromRemoteByPage( { commit }, page){
+        async getLatestVinylAlbumsFromRemote( { commit } ){
             commit( 'setStatus', 'loading' );
             
             try {
-                const result = await fetch(`/api/getPages?page=${page}`);
+                const result = await fetch('/api/getVinylRows');
                 const json = await result.json();
 
-                commit('addAlbumsPage', {
-                    page: page,
-                    albums: json.data.map((album) => ({
-                        ...album,
-                        art_url: album.art_url.replace('_7.', '_10.'),
-                    }))
-                });
-                commit( 'setStatus', 'ready' );
-                
-            } catch (error) {
-                commit( 'setStatus', 'error' );
-            }            
-        },
-        async getAlbumsFromRemoteByArtist( { commit }, artist){
-            commit( 'setStatus', 'loading' );
-            
-            try {
-                const result = await fetch(`/api/getArtist?artist=${artist}`);
-                const json = await result.json();
+                console.log({ json });
 
-                commit('addAlbumsArtist', {
-                    artist,
-                    albums: json.map((album) => ({
-                        ...album,
-                        art_url: album.art_url.replace('_7.', '_10.'),
-                    }))
-                });
+                commit('setVinylAlbums', json.map((album) => ({ ...album, tags: JSON.parse(album.tags) })));
                 commit( 'setStatus', 'ready' );
                 
             } catch (error) {
@@ -87,6 +67,9 @@ export default {
     getters: {
         latestAlbums (state) {
             return state.latestAlbums;
+        },
+        vinylAlbums (state) {
+            return state.vinylAlbums;
         },
         albumsByPage: (state) => (page) => {
             return state.albums.find((albumsPage) => albumsPage.page === page);

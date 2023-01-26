@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <AlbumGrid
-      :albums="latestAlbums"
+      :albums="albumstoShow"
       title="Latest Sold Albums"
       :status="albumsStatus"
     ></AlbumGrid>
@@ -20,7 +20,14 @@ export default {
   },
   mounted() {},
   computed: {
-    ...mapGetters(["latestAlbums", "albumsStatus"]),
+    ...mapGetters(["latestAlbums", "albumsStatus", "vinylAlbums"]),
+    albumstoShow() {
+      const showVinyl = window.localStorage.getItem('showVinyl') === 'true';
+
+      console.log({ showVinyl });
+
+      return showVinyl ? this.vinylAlbums : this.latestAlbums;
+    }
   },
 };
 </script>
