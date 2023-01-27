@@ -10,8 +10,8 @@
 export default {
   name: "App",
   mounted() {
-    this.$store.dispatch("getLatestVinylAlbumsFromRemote");
-    // this.$store.dispatch("getLatestAlbumsFromRemote");
+    // this.$store.dispatch("getLatestVinylAlbumsFromRemote");
+    this.$store.dispatch("getLatestAlbumsFromRemote");
   },
 };
 </script>

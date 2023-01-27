@@ -22,11 +22,12 @@ export default {
   computed: {
     ...mapGetters(["latestAlbums", "albumsStatus", "vinylAlbums"]),
     albumstoShow() {
-      const showVinyl = window.localStorage.getItem('showVinyl') === 'true';
+      // const showVinyl = window.localStorage.getItem('showVinyl') === 'true';
 
-      console.log({ showVinyl });
+      // console.log({ showVinyl });
 
-      return showVinyl ? this.vinylAlbums : this.latestAlbums;
+      // return showVinyl ? this.vinylAlbums : this.latestAlbums;
+      return this.latestAlbums;
     }
   },
 };

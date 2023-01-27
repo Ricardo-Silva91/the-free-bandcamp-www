@@ -35,17 +35,16 @@
       </div>
     </a>
     <div class="album__data-layer">
-      <span>{{ album.artist }}</span>
-      <a :href="album.link" target="_blank">{{ album.description }}</a>
+      <a :href="album.link" target="_blank"><h2>{{ album.title }}</h2></a>
       <router-link
         :to="{
           name: 'Artist',
           params: { id: album.artist },
         }"
         exact
-        >{{ album.artist }}</router-link
+        ><h3>{{ album.artist }}</h3></router-link
       >
-      <div class="album__data-layer__tags" v-if="tags.length">
+      <!-- <div class="album__data-layer__tags" v-if="tags.length">
         <div
           v-for="tag of tags"
           class="album__data-layer__tags__tag"
@@ -54,7 +53,7 @@
         >
           {{ tag }}
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -110,8 +109,11 @@ $data-height: $space-one;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   border-radius: $border-radius;
+  
+  & a {
+    color: $color-gainsboro;
+  }
 
   &--visible {
     @extend .with-float-animation;
