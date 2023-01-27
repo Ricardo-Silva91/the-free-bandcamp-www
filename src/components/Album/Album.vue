@@ -44,16 +44,6 @@
         exact
         ><h3>{{ album.artist }}</h3></router-link
       >
-      <!-- <div class="album__data-layer__tags" v-if="tags.length">
-        <div
-          v-for="tag of tags"
-          class="album__data-layer__tags__tag"
-          :key="tag"
-          @click="$emit('tagClick', tag)"
-        >
-          {{ tag }}
-        </div>
-      </div> -->
     </div>
   </div>
 </template>
