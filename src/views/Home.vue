@@ -27,7 +27,7 @@ export default {
       // console.log({ showVinyl });
 
       // return showVinyl ? this.vinylAlbums : this.latestAlbums;
-      return this.latestAlbums;
+      return this.latestAlbums.filter((album, index) => this.latestAlbums.findIndex((cAlbum) => cAlbum.link === album.link) === index);
     }
   },
 };
