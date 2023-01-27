@@ -5,6 +5,7 @@
     </h2>
     <div v-if="status === 'ready' && albums.length" class="album-grid__sort-filter">
       <CrispyButton @click="sortToggle()">sort: {{sort}}</CrispyButton>
+      <CrispyButton @click="vinylToggle()">vinyl filter: {{filterByVinyl}}</CrispyButton>
       <CrispySelect :options="tags" label="Tags (alphabetically)" v-model="selectedFilterTag" placeholder="pick a tag..."></CrispySelect>
       <CrispySelect :options="popularTags" label="Tags (popularity)" v-model="selectedFilterTag" placeholder="pick a tag..."></CrispySelect>
     </div>
@@ -40,6 +41,7 @@ export default {
     jump: 12,
     bottomIsVisible: false,
     mounted: false,
+    filterByVinyl: false,
     sort: 'asc',
     selectedFilterTag: undefined,
   }),
@@ -57,7 +59,7 @@ export default {
   },
   computed: {
     albumsToShow() {
-      let albumArray = [...this.albums];
+      let albumArray = this.filterByVinyl ? [...this.albums.filter((album) => album.availableInVinyl === 'TRUE')] : [...this.albums];
       albumArray = this.sort === 'asc' ? albumArray : albumArray.reverse();
       
       if (this.selectedFilterTag) {
@@ -104,6 +106,10 @@ export default {
     },
     sortToggle() {
       this.sort = this.sort === 'asc' ? 'desc' : 'asc';
+      this.numberOfAlbumsToShow = this.jump;
+    },
+    vinylToggle() {
+      this.filterByVinyl = !this.filterByVinyl;
       this.numberOfAlbumsToShow = this.jump;
     },
     handleAlbumTagClick(tag) {
