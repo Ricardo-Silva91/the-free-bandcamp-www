@@ -69,12 +69,12 @@ export default {
       return albumArray.slice(0, this.numberOfAlbumsToShow);
     },
     tags() {
-      const allTags = [...this.albums].reduce((acc, album) => [...acc, ...((album.tags || []).filter((tag) => !acc.includes(tag)) || [])], []).sort();
+      const allTags = [...this.albumsToShow].reduce((acc, album) => [...acc, ...((album.tags || []).filter((tag) => !acc.includes(tag)) || [])], []).sort();
 
       return allTags;
     },
     popularTags() {
-      const commonTags = [...this.albums].reduce((acc, album) => {
+      const commonTags = [...this.albumsToShow].reduce((acc, album) => {
         const albumTags = album.tags || [];
 
         for (const tag of albumTags) {
