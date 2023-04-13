@@ -2,7 +2,7 @@
   <div class="home">
     <AlbumGrid
       :albums="albumstoShow"
-      title="Latest Sold Albums"
+      title="Latest Sold Albums On Bandcamp"
       :status="albumsStatus"
     ></AlbumGrid>
   </div>
@@ -23,8 +23,6 @@ export default {
     ...mapGetters(["latestAlbums", "albumsStatus", "vinylAlbums"]),
     albumstoShow() {
       // const showVinyl = window.localStorage.getItem('showVinyl') === 'true';
-
-      // console.log({ showVinyl });
 
       // return showVinyl ? this.vinylAlbums : this.latestAlbums;
       return this.latestAlbums.filter((album, index) => this.latestAlbums.findIndex((cAlbum) => cAlbum.link === album.link) === index);

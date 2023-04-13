@@ -4,8 +4,6 @@ exports.handler = async () => {
     try {
       const response = await fetch(`https://tfb-api.netlify.app/api/getVinylRows?limit=200`);
       const result = await response.json();
-      
-      console.log({ rl: result.length });
 
       return {
         statusCode: 200,

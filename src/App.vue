@@ -1,8 +1,8 @@
 <template>
-  <div id="nav">
+  <!-- <div id="nav">
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link>
-  </div>
+  </div> -->
   <router-view />
 </template>
 
@@ -10,7 +10,6 @@
 export default {
   name: "App",
   mounted() {
-    // this.$store.dispatch("getLatestVinylAlbumsFromRemote");
     this.$store.dispatch("getLatestAlbumsFromRemote");
   },
 };

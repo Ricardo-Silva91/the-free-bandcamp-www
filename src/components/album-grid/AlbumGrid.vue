@@ -69,7 +69,7 @@ export default {
       return albumArray.slice(0, this.numberOfAlbumsToShow);
     },
     tags() {
-      const allTags = [...this.albumsToShow].reduce((acc, album) => [...acc, ...((album.tags || []).filter((tag) => !acc.includes(tag)) || [])], []).sort();
+      const allTags = [...this.albumsToShow].reduce((acc, album) => [...acc, ...((album.tags || []).filter((tag, index) => album.tags.findIndex((tagEl) => tag === tagEl) === index && acc.findIndex((tagEl) => tag === tagEl) === -1) || [])], []).sort();
 
       return allTags;
     },
@@ -79,7 +79,7 @@ export default {
 
         for (const tag of albumTags) {
           const tagIndex = acc.findIndex((tagObject) => tagObject.tag === tag);
-
+          
           if (tagIndex !== -1) {
             acc[tagIndex].count = acc[tagIndex].count + 1;
           } else {

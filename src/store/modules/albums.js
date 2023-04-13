@@ -17,6 +17,9 @@ export default {
         setLatestAlbums(state, latestAlbums) {
             state.latestAlbums = latestAlbums;
         },
+        addToLatestAlbums(state, latestAlbums) {
+            state.latestAlbums = [...state.latestAlbums, ...latestAlbums];
+        },
         setVinylAlbums(state, vinylAlbums) {
             state.vinylAlbums = vinylAlbums;
         },
@@ -35,13 +38,23 @@ export default {
             commit( 'setStatus', 'loading' );
             
             try {
-                const result = await fetch('/api/getLatest');
-                const json = await result.json();
-
-                console.log({ json });
+                let offset = 100;
+                let limit = 100;
+                let count = 4;
+                let result = await fetch(`/api/getLatest?offset=${offset}&limit=${limit}`);
+                let json = await result.json();
 
                 commit('setLatestAlbums', json.map((album) => ({ ...album, tags: JSON.parse(album.tags) })));
                 commit( 'setStatus', 'ready' );
+
+                while (count) {
+                    offset += 100;
+                    count -= 1;
+                    result = await fetch(`/api/getLatest?offset=${offset}&limit=${limit}`);
+                    json = await result.json();
+
+                    commit('addToLatestAlbums', json.map((album) => ({ ...album, tags: JSON.parse(album.tags) })));
+                }
                 
             } catch (error) {
                 commit( 'setStatus', 'error' );
@@ -53,8 +66,6 @@ export default {
             try {
                 const result = await fetch('/api/getVinylRows');
                 const json = await result.json();
-
-                console.log({ json });
 
                 commit('setVinylAlbums', json.map((album) => ({ ...album, tags: JSON.parse(album.tags) })));
                 commit( 'setStatus', 'ready' );

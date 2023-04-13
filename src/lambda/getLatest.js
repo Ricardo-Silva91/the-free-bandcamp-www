@@ -1,11 +1,12 @@
 import fetch from 'node-fetch';
 
-exports.handler = async () => {
+exports.handler = async (event) => {
+    const offset = parseInt(event.queryStringParameters.offset || 30, 10);
+    const limit = parseInt(event.queryStringParameters.limit || 30, 10);
+
     try {
-      const response = await fetch(`https://tfb-api.netlify.app/api/getLatest?offset=500&limit=500`);
+      const response = await fetch(`https://tfb-api.netlify.app/api/getLatest?offset=${offset}&limit=${limit}`);
       const result = await response.json();
-      
-      console.log({ rl: result.length });
 
       return {
         statusCode: 200,
