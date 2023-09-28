@@ -38,8 +38,8 @@ export default {
             commit( 'setStatus', 'loading' );
             
             try {
-                let offset = 100;
-                let limit = 100;
+                let offset = 1500;
+                let limit = 1500;
                 let count = 4;
                 let result = await fetch(`/api/getLatest?offset=${offset}&limit=${limit}`);
                 let json = await result.json();
